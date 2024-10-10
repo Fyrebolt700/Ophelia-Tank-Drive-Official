@@ -1,7 +1,5 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
 
+//import needed packages
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -9,16 +7,18 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj.Encoder;
 
 /**
- * This is a demo program showing the use of the DifferentialDrive class. Runs the motors with
- * arcade steering.
+ * This is a basic TankDrive program with both autonomous and Teleop using arcade drive (its made to drive using 1 joystick on a controller).
  */
 public class Robot extends TimedRobot {
   private final PWMSparkMax m_leftMotor = new PWMSparkMax(0);
   private final PWMSparkMax m_rightMotor = new PWMSparkMax(1);
   private final DifferentialDrive m_robotDrive = new DifferentialDrive(m_leftMotor, m_rightMotor);
   private final Joystick m_stick = new Joystick(0);
+  private final Encoder m_leftEncoder = new Encoder(0,1);
+  private final Encoder m_rightEncoder = new Encoder(2,3);
 
   @Override
   public void robotInit() {
@@ -28,27 +28,36 @@ public class Robot extends TimedRobot {
     m_rightMotor.setInverted(true);
   }
 
+    // Teleop: human operated
   @Override
   public void teleopPeriodic() {
     // Drive with arcade drive.
-    // That means that the Y axis drives forward
+    // That means that the Y axis on a joystick drives forward
     // and backward, and the X turns left and right.
     m_robotDrive.arcadeDrive(-m_stick.getY(), -m_stick.getX());
     
-    // Turn right and drive when top button on controller is pressed
+    // When top button is pressed, turn right and drive forward
+    // arcade drive: (speed, rotation)
     if(m_stick.getTopPressed()){
-      m_robotDrive.arcadeDrive(0, 0.5); // (speed, rotation)
-      m_robotDrive.arcadeDrive(0.2, 0);
-      Timer.delay(2);
-      m_robotDrive.stopMotor();
+      m_robotDrive.arcadeDrive(0, 0.5); // turn right
+      m_robotDrive.arcadeDrive(0.2, 0); //move forward at 0.2 speed
+      Timer.delay(2); // run for 2 seconds
+      m_robotDrive.stopMotor(); //stop motor
     }
   }
 
-  // Drive forward at speed 0.3 for 3 seconds
+  // reset encoder count 
   @Override
   public void autonomousInit(){
-    m_robotDrive.arcadeDrive(0.3, 0);
-    Timer.delay(3);
+    m_rightEncoder.reset();
+  }
+
+  //autonomous: driver has no control; fully automatic
+  // Drive forward at speed 0.2 for 2 seconds
+  @Override
+  public void autonomousPeriodic(){
+    m_robotDrive.arcadeDrive(0.2, 0);
+    Timer.delay(2);
     m_robotDrive.stopMotor();
   }
 }
