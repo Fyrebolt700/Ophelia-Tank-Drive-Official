@@ -42,7 +42,6 @@ public class Robot extends TimedRobot {
     // gearbox is constructed, you might have to invert the left side instead.
     m_rightMotor1.setInverted(true);
     m_leftMotor1.setInverted(true);
-
     m_rightMotor2.follow(m_rightMotor1);
     m_leftMotor2.follow(m_leftMotor1);
 
