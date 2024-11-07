@@ -25,6 +25,8 @@ public class Robot extends TimedRobot {
 
   //initalizing controller
   private final Joystick m_stick = new Joystick(0);
+  //private final Joystick m_rightStick = new Joystick(1);
+
 
   //adds both motors to registry under parent object(m_robotDrive)
   //For better organization later on 
@@ -41,25 +43,53 @@ public class Robot extends TimedRobot {
     // We need to invert both sides
     m_rightMotor1.setInverted(true);
     m_leftMotor1.setInverted(true);
+    //reduce speed on right side
+    //m_rightMotor1.set(m_rightMotor1.get() * 0.95);
     m_rightMotor2.follow(m_rightMotor1);
     m_leftMotor2.follow(m_leftMotor1);
+
   }
 
   @Override
+
+  //arcade drive for Teleop
   public void teleopPeriodic() {
-    // Drive with arcade drive.
-    // Y axis drives forward
-    // X turns left and right
-    
-    //m_robotDrive.arcadeDrive(m_stick.getX() * 0.6, m_stick.getY() * 0.6);
 
-    //m_robotDrive.arcadeDrive(-m_stick.getX(), m_stick.getY());
+    //double right_motorSpeed = m_leftMotor1
 
-    //if the "RB" button is held down, max speed is 60%
+  //m_robotDrive.arcadeDrive(m_leftStick.getRawAxis(2) * 0.75, -m_leftStick.getRawAxis(1));
+
+    // //if the "RB" button is held down, max speed is 70%
     if (m_stick.getRawButton(6)){
-      m_robotDrive.arcadeDrive(m_stick.getX()*0.7, -m_stick.getY()*0.7);
+      //turning constant: 70%
+      //slows forward/backward: 65%
+      m_robotDrive.arcadeDrive(m_stick.getRawAxis(4)*0.70, -m_stick.getRawAxis(1)*0.65);
+    } else if(m_stick.getRawButton(5)){
+      m_robotDrive.arcadeDrive(m_stick.getRawAxis(4)*0, -m_stick.getRawAxis(1)*0);
+      //m_robotDrive.stopMotor();
     } else {
-      m_robotDrive.arcadeDrive(m_stick.getX(), -m_stick.getY());
+      //turning constant: 70%
+      //forward/backward regular speed: 75%
+      m_robotDrive.arcadeDrive(m_stick.getRawAxis(4) * 0.70, -m_stick.getRawAxis(1)* 0.70);
     }
+
+
+
+
+    //2-stick drivecontrol
+    // if (m_leftStick.getRawButton(6)){
+    //   m_robotDrive.tankDrive(m_leftStick.getX()*0.6, m_rightStick.getX()*0.6);
+
+    // } else {
+    //   m_robotDrive.tankDrive(m_leftStick.getX(), m_rightStick.getX());
+    // }
+    
+    //stops motor when "LB" button is help down
+    // if (m_leftStick.getRawButton(5)){
+    //   m_robotDrive.arcadeDrive(m_leftStick.getRawAxis(2)*0, -m_leftStick.getRawAxis(1)*0);
+    // } else {
+    //   m_robotDrive.arcadeDrive(m_leftStick.getX(), -m_leftStick.getY());
+    // }
   }
 }
+
